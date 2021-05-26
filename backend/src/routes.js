@@ -9,5 +9,9 @@ router.get("/", async (request, response) => {
   let data = await db.getHomeData();
   response.status(200).send(data);
 });
+router.get("/projects", async (request, response) => {
+  let data = await db.getProjectsData();
+  response.status(200).send(data);
+});
 
 export default router;
