@@ -40,6 +40,30 @@ const getHomeData = async () => {
   }
 };
 
+const getProjectsData = async () => {
+  const client = await MongoClient.connect(url, {
+    useNewUrlParser: true,
+  }).catch((err) => {
+    console.log(err);
+  });
+
+  if (!client) {
+    return;
+  }
+  try {
+    const db = client.db(dbName);
+    let collection = db.collection("projects");
+
+    let result = await collection.find().toArray();
+    return result;
+  } catch (err) {
+    console.log(err);
+  } finally {
+    client.close();
+  }
+};
+
 export default {
   getHomeData,
+  getProjectsData,
 };

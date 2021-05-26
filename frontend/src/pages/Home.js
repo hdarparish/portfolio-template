@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from "react";
+import axios from "axios";
+//styles
 import Typography from "@material-ui/core/Typography";
 import Box from "@material-ui/core/Box";
 import Avatar from "../img/avatar.png";
-import axios from "axios";
 
 const Home = () => {
   const [title, setTitle] = useState("");
