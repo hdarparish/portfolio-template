@@ -1,5 +1,6 @@
 import Home from "./pages/Home";
 import Project from "./pages/Project";
+import Contact from "./pages/Contact";
 import Nav from "./components/Nav";
 import { BrowserRouter, Route, Switch } from "react-router-dom";
 import "@fontsource/roboto";
@@ -12,8 +13,7 @@ function App() {
         <Switch>
           <Route path="/" component={Home} exact />
           <Route path="/projects" component={Project} />
-          {/*           <Route path="/projects" component={Resume} />
-          <Route path="/contact" component={Contact} /> */}
+          <Route path="/contact" component={Contact} />
         </Switch>
       </BrowserRouter>
     </div>

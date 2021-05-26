@@ -14,4 +14,9 @@ router.get("/projects", async (request, response) => {
   response.status(200).send(data);
 });
 
+router.post("/contact", async (request, response) => {
+  let result = await db.addContactInfo(request.body.contactInfo);
+  response.status(200).send(result);
+});
+
 export default router;
