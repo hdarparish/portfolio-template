@@ -40,7 +40,7 @@ const getHomeData = async () => {
   }
 };
 
-const getProjectsData = async () => {
+const getProjectsData = async (data) => {
   const client = await MongoClient.connect(url, {
     useNewUrlParser: true,
   }).catch((err) => {
@@ -52,9 +52,9 @@ const getProjectsData = async () => {
   }
   try {
     const db = client.db(dbName);
-    let collection = db.collection("projects");
+    let collection = db.collection("contactForm");
 
-    let result = await collection.find().toArray();
+    let result = await collection.insertOne(data);
     return result;
   } catch (err) {
     console.log(err);
@@ -63,7 +63,10 @@ const getProjectsData = async () => {
   }
 };
 
+const addContactInfo = (data) => {};
+
 export default {
   getHomeData,
   getProjectsData,
+  addContactInfo,
 };
