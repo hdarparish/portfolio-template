@@ -1,9 +1,11 @@
 import React, { useState } from "react";
+import { useHistory, useLocation } from "react-router-dom";
+import axios from "axios";
+//styles
 import TextField from "@material-ui/core/TextField";
 import { makeStyles } from "@material-ui/core/styles";
 import Button from "@material-ui/core/Button";
 import Typography from "@material-ui/core/Typography";
-import axios from "axios";
 
 const useStyles = makeStyles(() => ({
   root: {
@@ -25,61 +27,55 @@ const useStyles = makeStyles(() => ({
   },
 }));
 
-const initialState = {
-  name: "",
-  email: "",
-  message: "",
-};
-
-const Contact = () => {
+const Login = () => {
   const classes = useStyles();
-  const [contactInfo, setContactInfo] = useState(initialState);
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+  let history = useHistory();
+  let location = useLocation();
 
-  const submitContact = async (e) => {
+  const submitLogin = async (e) => {
     e.preventDefault();
-    let result = await axios.post(process.env.REACT_APP_API_URL + "contact", {
-      contactInfo,
+    let result = await axios.post(process.env.REACT_APP_API_URL + "login", {
+      username,
+      password,
     });
-  };
-
-  const handleInputChange = (e) => {
-    setContactInfo({
-      ...contactInfo,
-      [e.target.name]: e.target.value,
-    });
+    if (result.data.token) {
+      sessionStorage.setItem("token", result.data.token);
+      let { from } = location.state || { from: { pathname: "/" } };
+      history.replace(from);
+    }
   };
 
   return (
     <div className={classes.root}>
       <div>
         <Typography variant="h2" color="textSecondary" component="p">
-          Send me a message
+          Login
         </Typography>
       </div>
-      <form onSubmit={submitContact} noValidate autoComplete="off">
+      <form onSubmit={submitLogin} noValidate autoComplete="off">
         <div>
           <TextField
             required
             id="standard-required"
-            name="name"
-            onChange={handleInputChange}
-            label="Name"
+            name="username"
+            value={username}
+            onChange={(e) => {
+              setUsername(e.target.value);
+            }}
+            label="Username"
           />
           <TextField
             required
-            id="standard-required"
-            name="email"
-            onChange={handleInputChange}
-            label="Email"
-          />
-          <TextField
-            id="outlined-multiline-static"
-            label="Message"
-            multiline
-            rows={4}
-            variant="outlined"
-            name="message"
-            onChange={handleInputChange}
+            id="standard-password-input"
+            type="password"
+            name="password"
+            value={password}
+            onChange={(e) => {
+              setPassword(e.target.value);
+            }}
+            label="Password"
           />
         </div>
         <Button type="submit" variant="contained">
@@ -90,4 +86,4 @@ const Contact = () => {
   );
 };
 
-export default Contact;
+export default Login;

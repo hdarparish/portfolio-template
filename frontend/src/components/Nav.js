@@ -56,6 +56,9 @@ const Nav = () => {
           <ListItem button component={Link} to="/contact">
             <ListItemText primary="Contact" />
           </ListItem>
+          <ListItem button component={Link} to="/dashboard">
+            <ListItemText primary="Login" />
+          </ListItem>
         </List>
       </AppBar>
     </div>
