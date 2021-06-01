@@ -39,6 +39,29 @@ const getHomeData = async () => {
     client.close();
   }
 };
+const editHomeData = async (data) => {
+  const client = await MongoClient.connect(url, {
+    useNewUrlParser: true,
+  }).catch((err) => {
+    console.log(err);
+  });
+
+  if (!client) {
+    return;
+  }
+  try {
+    const db = client.db(dbName);
+    let collection = db.collection("home");
+
+    let result = await collection.replaceOne(data._id, data);
+
+    return result;
+  } catch (err) {
+    console.log(err);
+  } finally {
+    client.close();
+  }
+};
 
 const getProjectsData = async () => {
   const client = await MongoClient.connect(url, {
@@ -122,7 +145,8 @@ const addUser = async (username, password) => {
   try {
     const db = client.db(dbName);
     let collection = db.collection("users");
-    await collection.insertOne({ username, password });
+    let result = await collection.insertOne({ username, password });
+    return result;
   } catch (err) {
     console.log(err);
   } finally {
@@ -176,6 +200,29 @@ const getAllUsers = async () => {
   }
 };
 
+const editUser = async (data) => {
+  const client = await MongoClient.connect(url, {
+    useNewUrlParser: true,
+  }).catch((err) => {
+    console.log(err);
+  });
+
+  if (!client) {
+    return;
+  }
+  try {
+    const db = client.db(dbName);
+    let collection = db.collection("users");
+
+    let result = await collection.replaceOne(data._id, data);
+    return result;
+  } catch (err) {
+    console.log(err);
+  } finally {
+    client.close();
+  }
+};
+
 const getAll = async () => {
   let homeData = await getHomeData();
   let projectData = await getProjectsData();
@@ -186,9 +233,11 @@ const getAll = async () => {
 
 export default {
   getHomeData,
+  editHomeData,
   getProjectsData,
   addContactInfo,
   addUser,
   getUser,
+  editUser,
   getAll,
 };

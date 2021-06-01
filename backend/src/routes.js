@@ -27,7 +27,10 @@ router.get("/projects", async (request, response) => {
 router.post("/contact", async (request, response) => {
   try {
     let result = await db.addContactInfo(request.body.contactInfo);
-    response.status(200).send(result);
+    if (result.insertedCount) {
+      response.status(200).send({ message: "message sent" });
+    }
+    response.status(400).send({ error: "could not submit message" });
   } catch (err) {
     response.status(404).send(err);
   }
@@ -59,8 +62,22 @@ router.post("/user", async (request, response) => {
   let saltRounds = Number(process.env.BCRYPT_ROUNDS);
   try {
     let passwordHash = await bcrypt.hash(password, saltRounds);
-    await db.addUser(username, passwordHash);
-    response.status(200).send("user added");
+    let result = await db.addUser(username, passwordHash);
+    if (result.insertedCount) {
+      response.status(201).send({ message: "user account created" });
+    }
+    response.status(400).send({ error: "could not create user" });
+  } catch (err) {
+    response.status(404).send(err);
+  }
+});
+
+router.post("/user", async (request, response) => {
+  try {
+    if (result.insertedCount) {
+      response.status(201).send({ message: "user account created" });
+    }
+    response.status(400).send({ error: "could not create user" });
   } catch (err) {
     response.status(404).send(err);
   }
@@ -70,6 +87,17 @@ router.get("/dashboard", async (request, response) => {
   try {
     let data = await db.getAll();
     response.status(200).send(data);
+  } catch (err) {
+    response.status(404).send(err);
+  }
+});
+
+router.post("/home-dashboard", async (request, response) => {
+  try {
+    let result = db.editHomeData(request.body.homePageData);
+    if (result.insertedCount) {
+      response.status(200).send({ message: "Home page updated" });
+    }
   } catch (err) {
     response.status(404).send(err);
   }
