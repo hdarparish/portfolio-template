@@ -19,10 +19,10 @@ function App() {
           <Route path="/projects" component={Project} />
           <Route path="/contact" component={Contact} />
           <Route path="/login" component={Login} />
-          {/*           <Route path="/dashboard" component={Dashboard} /> */}
-          <PrivateRoute path="/dashboard">
+          <Route path="/dashboard" component={Dashboard} />
+          {/*           <PrivateRoute path="/dashboard">
             <Dashboard />
-          </PrivateRoute>
+          </PrivateRoute> */}
         </Switch>
       </BrowserRouter>
     </div>
