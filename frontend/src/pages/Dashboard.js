@@ -1,4 +1,5 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
+import axios from "axios";
 import PropTypes from "prop-types";
 //styles
 import { makeStyles, useTheme } from "@material-ui/core/styles";
@@ -89,10 +90,24 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
+const initialProjectState = {
+  title: "",
+  briefDescription: "",
+  description: "",
+  projectURL: "",
+};
+
 const Dashboard = () => {
   const classes = useStyles();
   const theme = useTheme();
   const [value, setValue] = React.useState(0);
+  const [homePageData, setHomePageData] = useState({
+    title: "",
+    description: "",
+  });
+  const [projectData, setProjectData] = useState([]);
+  const [projectForm, setProjectForm] = useState(initialProjectState);
+  const [contactEntries, setContactEntries] = useState([]);
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
@@ -101,6 +116,25 @@ const Dashboard = () => {
   const handleChangeIndex = (index) => {
     setValue(index);
   };
+
+  const getDashboard = async () => {
+    let result = await axios.get(process.env.REACT_APP_API_URL + "dashboard");
+
+    setHomePageData(result.data.homeData);
+    setProjectData(result.data.projectData);
+    setContactEntries(result.data.contactEntries);
+  };
+
+  const projectListForm = (e) => {
+    let projectId = e.target.parentElement.parentNode.id;
+    let result = projectData.filter((item) => item._id == projectId)[0];
+    setProjectForm(result);
+    console.log(projectForm);
+  };
+
+  useEffect(() => {
+    getDashboard();
+  }, []);
 
   return (
     <div className={classes.root}>
@@ -124,7 +158,14 @@ const Dashboard = () => {
           Edit Home Page
         </Typography>
         <form noValidate autoComplete="off">
-          <TextField id="standard-basic" label="Title" />
+          <TextField
+            id="standard-basic"
+            value={homePageData.title}
+            label="Title"
+            InputLabelProps={{
+              shrink: true,
+            }}
+          />
           <TextField
             id="outlined-multiline-static"
             label="Description"
@@ -132,6 +173,10 @@ const Dashboard = () => {
             rows={4}
             variant="outlined"
             name="description"
+            value={homePageData.description}
+            InputLabelProps={{
+              shrink: true,
+            }}
           />
           <Button type="submit" variant="contained">
             Save Changes
@@ -144,11 +189,21 @@ const Dashboard = () => {
             <li className={classes.listSection}>
               <ul className={classes.ul}>
                 <ListItem button>
-                  <ListItemText primary="Add Project" />
+                  <ListItemText
+                    primary="Add Project"
+                    onClick={() => {
+                      setProjectForm(initialProjectState);
+                    }}
+                  />
                 </ListItem>
-                {[0, 1, 2].map((item) => (
-                  <ListItem button key={`item-${item}`}>
-                    <ListItemText primary={`Item ${item}`} />
+                {projectData.map((item) => (
+                  <ListItem button key={item._id} id={item._id}>
+                    <ListItemText
+                      primary={`Item ${item.title}`}
+                      secondary={item._id}
+                      value={item._id}
+                      onClick={projectListForm}
+                    />
                   </ListItem>
                 ))}
               </ul>
@@ -159,7 +214,14 @@ const Dashboard = () => {
               Project
             </Typography>
             <form noValidate autoComplete="off">
-              <TextField id="standard-basic" label="Title" />
+              <TextField
+                id="standard-basic"
+                label="Title"
+                InputLabelProps={{
+                  shrink: true,
+                }}
+                value={projectForm.title}
+              />
               <TextField
                 id="outlined-multiline-static"
                 label="Brief Description"
@@ -167,6 +229,10 @@ const Dashboard = () => {
                 rows={4}
                 variant="outlined"
                 name="description"
+                InputLabelProps={{
+                  shrink: true,
+                }}
+                value={projectForm.briefDescription}
               />
               <TextField
                 id="outlined-multiline-static"
@@ -175,6 +241,10 @@ const Dashboard = () => {
                 rows={4}
                 variant="outlined"
                 name="description"
+                InputLabelProps={{
+                  shrink: true,
+                }}
+                value={projectForm.description}
               />
               <TextField
                 id="outlined-multiline-static"
@@ -183,6 +253,10 @@ const Dashboard = () => {
                 rows={2}
                 variant="outlined"
                 name="description"
+                InputLabelProps={{
+                  shrink: true,
+                }}
+                value={projectForm.projectURL}
               />
               <Button type="submit" variant="contained">
                 Save Changes
@@ -203,14 +277,17 @@ const Dashboard = () => {
               </TableRow>
             </TableHead>
             <TableBody>
-              <TableRow>
-                <TableCell component="th" scope="row">
-                  {new Date().toLocaleDateString()}
-                </TableCell>
-                <TableCell>John Smith</TableCell>
-                <TableCell>jsmith@email.com</TableCell>
-                <TableCell>This is a test</TableCell>
-              </TableRow>
+              {contactEntries &&
+                contactEntries.map((item) => (
+                  <TableRow key={item._id}>
+                    <TableCell component="th" scope="row">
+                      {new Date().toLocaleDateString()}
+                    </TableCell>
+                    <TableCell>{item.name}</TableCell>
+                    <TableCell>{item.email}</TableCell>
+                    <TableCell>{item.message}</TableCell>
+                  </TableRow>
+                ))}
             </TableBody>
           </Table>
         </TableContainer>

@@ -86,6 +86,29 @@ const addContactInfo = async (data) => {
   }
 };
 
+const getContantInfo = async () => {
+  const client = await MongoClient.connect(url, {
+    useNewUrlParser: true,
+  }).catch((err) => {
+    console.log(err);
+  });
+
+  if (!client) {
+    return;
+  }
+  try {
+    const db = client.db(dbName);
+    let collection = db.collection("contactForm");
+
+    let result = await collection.find().toArray();
+    return result;
+  } catch (err) {
+    console.log(err);
+  } finally {
+    client.close();
+  }
+};
+
 const addUser = async (username, password) => {
   const client = await MongoClient.connect(url, {
     useNewUrlParser: true,
@@ -130,10 +153,42 @@ const getUser = async (username) => {
   }
 };
 
+const getAllUsers = async () => {
+  const client = await MongoClient.connect(url, {
+    useNewUrlParser: true,
+  }).catch((err) => {
+    console.log(err);
+  });
+
+  if (!client) {
+    return;
+  }
+  try {
+    const db = client.db(dbName);
+    let collection = db.collection("users");
+
+    let result = await collection.find().toArray();
+    return result;
+  } catch (err) {
+    console.log(err);
+  } finally {
+    client.close();
+  }
+};
+
+const getAll = async () => {
+  let homeData = await getHomeData();
+  let projectData = await getProjectsData();
+  let contactEntries = await getContantInfo();
+  let loginUsers = await getAllUsers();
+  return { homeData, projectData, contactEntries, loginUsers };
+};
+
 export default {
   getHomeData,
   getProjectsData,
   addContactInfo,
   addUser,
   getUser,
+  getAll,
 };

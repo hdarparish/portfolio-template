@@ -43,7 +43,12 @@ const ProjectCard = (item) => {
         </Typography>
       </CardContent>
       <CardActions disableSpacing>
-        <IconButton aria-label="github icon">
+        <IconButton
+          aria-label="github icon"
+          onClick={() => {
+            window.open(item.data.projectURL);
+          }}
+        >
           <GitHubIcon />
         </IconButton>
         <IconButton

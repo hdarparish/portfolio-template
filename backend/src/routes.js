@@ -8,17 +8,29 @@ dotenv.config();
 const router = express.Router();
 
 router.get("/", async (request, response) => {
-  let data = await db.getHomeData();
-  response.status(200).send(data);
+  try {
+    let data = await db.getHomeData();
+    response.status(200).send(data);
+  } catch (err) {
+    response.status(404).send(err);
+  }
 });
 router.get("/projects", async (request, response) => {
-  let data = await db.getProjectsData();
-  response.status(200).send(data);
+  try {
+    let data = await db.getProjectsData();
+    response.status(200).send(data);
+  } catch (err) {
+    response.status(404).send(err);
+  }
 });
 
 router.post("/contact", async (request, response) => {
-  let result = await db.addContactInfo(request.body.contactInfo);
-  response.status(200).send(result);
+  try {
+    let result = await db.addContactInfo(request.body.contactInfo);
+    response.status(200).send(result);
+  } catch (err) {
+    response.status(404).send(err);
+  }
 });
 
 router.post("/login", async (request, response) => {
@@ -49,6 +61,15 @@ router.post("/user", async (request, response) => {
     let passwordHash = await bcrypt.hash(password, saltRounds);
     await db.addUser(username, passwordHash);
     response.status(200).send("user added");
+  } catch (err) {
+    response.status(404).send(err);
+  }
+});
+
+router.get("/dashboard", async (request, response) => {
+  try {
+    let data = await db.getAll();
+    response.status(200).send(data);
   } catch (err) {
     response.status(404).send(err);
   }
