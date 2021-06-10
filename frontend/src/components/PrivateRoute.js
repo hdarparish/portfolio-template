@@ -3,7 +3,6 @@ import { Route, Redirect } from "react-router-dom";
 import authHeader from "../services/auth-header";
 
 const PrivateRoute = ({ children, ...rest }) => {
-  console.log(authHeader());
   return (
     <Route
       {...rest}

@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import axios from "axios";
 //styles
 import { makeStyles } from "@material-ui/core/styles";
 import TextField from "@material-ui/core/TextField";
@@ -52,14 +53,52 @@ const initialProjectState = {
   projectURL: "",
 };
 
-const ProjectsDashboard = (projectData) => {
+const ProjectsDashboard = ({ projectData, getDashboard }) => {
   const classes = useStyles();
   const [projectForm, setProjectForm] = useState(initialProjectState);
+  const [deleteButton, setDeleteButton] = useState(false);
 
   const projectListForm = (e) => {
+    //set to initial before updating the state
+    setDeleteButton(true);
+    setProjectForm(initialProjectState);
     let projectId = e.target.parentElement.parentNode.id;
     let result = projectData.filter((item) => item._id === projectId)[0];
     setProjectForm(result);
+  };
+
+  const updateProject = async (e) => {
+    e.preventDefault();
+    await axios.put(process.env.REACT_APP_API_URL + "projects", {
+      projectForm,
+    });
+    getDashboard();
+  };
+  const newProject = async (e) => {
+    e.preventDefault();
+    await axios.post(process.env.REACT_APP_API_URL + "projects", {
+      projectForm,
+    });
+    getDashboard();
+  };
+
+  const deleteProject = async (e) => {
+    e.preventDefault();
+    await axios.delete(
+      process.env.REACT_APP_API_URL + `projects/${projectForm._id}`,
+      {
+        projectForm,
+      }
+    );
+    getDashboard();
+    setProjectForm(initialProjectState);
+  };
+
+  const updateState = (e) => {
+    setProjectForm({
+      ...projectForm,
+      [e.target.name]: e.target.value,
+    });
   };
   return (
     <Box display="flex" flexWrap="wrap">
@@ -71,6 +110,7 @@ const ProjectsDashboard = (projectData) => {
                 primary="Add Project"
                 onClick={() => {
                   setProjectForm(initialProjectState);
+                  setDeleteButton(false);
                 }}
               />
             </ListItem>
@@ -78,7 +118,7 @@ const ProjectsDashboard = (projectData) => {
               projectData.map((item) => (
                 <ListItem button key={item._id} id={item._id}>
                   <ListItemText
-                    primary={`Item ${item.title}`}
+                    primary={item.title}
                     secondary={item._id}
                     onClick={projectListForm}
                   />
@@ -88,17 +128,36 @@ const ProjectsDashboard = (projectData) => {
         </li>
       </List>
       <Box flexGrow="1">
-        <Typography variant="h2" color="textSecondary" component="p">
-          Project
-        </Typography>
-        <form noValidate autoComplete="off">
+        <Box display="flex" alignItems="center" justifyContent="space-between">
+          <Typography variant="h2" color="textSecondary" component="p">
+            Project
+          </Typography>
+          {deleteButton && (
+            <Button
+              type="submit"
+              variant="contained"
+              color="secondary"
+              onClick={deleteProject}
+            >
+              Delete Project
+            </Button>
+          )}
+        </Box>
+
+        <form
+          noValidate
+          autoComplete="off"
+          onSubmit={projectForm._id ? updateProject : newProject}
+        >
           <TextField
             id="standard-basic"
             label="Title"
+            name="title"
             InputLabelProps={{
               shrink: true,
             }}
             value={projectForm.title}
+            onChange={updateState}
           />
           <TextField
             id="outlined-multiline-static"
@@ -106,11 +165,12 @@ const ProjectsDashboard = (projectData) => {
             multiline
             rows={4}
             variant="outlined"
-            name="description"
+            name="briefDescription"
             InputLabelProps={{
               shrink: true,
             }}
             value={projectForm.briefDescription}
+            onChange={updateState}
           />
           <TextField
             id="outlined-multiline-static"
@@ -123,6 +183,7 @@ const ProjectsDashboard = (projectData) => {
               shrink: true,
             }}
             value={projectForm.description}
+            onChange={updateState}
           />
           <TextField
             id="outlined-multiline-static"
@@ -130,11 +191,12 @@ const ProjectsDashboard = (projectData) => {
             multiline
             rows={2}
             variant="outlined"
-            name="description"
+            name="projectURL"
             InputLabelProps={{
               shrink: true,
             }}
             value={projectForm.projectURL}
+            onChange={updateState}
           />
           <Button type="submit" variant="contained">
             Save Changes

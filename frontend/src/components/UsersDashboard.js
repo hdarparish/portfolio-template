@@ -1,5 +1,5 @@
-import React from "react";
-
+import React, { useState } from "react";
+import axios from "axios";
 //styles
 import { makeStyles } from "@material-ui/core/styles";
 import Typography from "@material-ui/core/Typography";
@@ -46,8 +46,40 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const UsersDashboard = (userData) => {
+const initialUserState = {
+  username: "",
+  password: "",
+};
+
+const UsersDashboard = ({ userData, setUserData }) => {
   const classes = useStyles();
+  const [userForm, setUserForm] = useState(initialUserState);
+
+  const usersForm = (e) => {
+    let userId = e.target.parentElement.parentNode.id;
+    let result = userData.filter((item) => item._id === userId)[0];
+    result.password = "";
+    setUserForm(result);
+  };
+
+  const updateState = (e) => {
+    setUserForm({
+      ...userForm,
+      [e.target.name]: e.target.value,
+    });
+  };
+
+  const updateLogin = async (e) => {
+    e.preventDefault();
+    console.log(userForm);
+    /*     let result = await axios.post(
+      process.env.REACT_APP_API_URL + "home-dashboard",
+      {
+        userForm,
+      }
+    );
+    console.log(result); */
+  };
   return (
     <Box display="flex" flexWrap="wrap">
       <List className={classes.userList}>
@@ -57,19 +89,20 @@ const UsersDashboard = (userData) => {
               <ListItemText
                 primary="Add User"
                 onClick={() => {
-                  //setProjectForm(initialProjectState);
+                  setUserForm(initialUserState);
                 }}
               />
             </ListItem>
-            {/*  {userData &&
+            {userData &&
               userData.map((item) => (
                 <ListItem button key={item._id} id={item._id}>
                   <ListItemText
-                    primary={`Item ${item.username}`}
+                    primary={`${item.username}`}
                     secondary={item._id}
+                    onClick={usersForm}
                   />
                 </ListItem>
-              ))} */}
+              ))}
           </ul>
         </li>
       </List>
@@ -77,13 +110,16 @@ const UsersDashboard = (userData) => {
         <Typography variant="h2" color="textSecondary" component="p">
           Users
         </Typography>
-        <form noValidate autoComplete="off">
+        <form noValidate autoComplete="off" onSubmit={updateLogin}>
           <TextField
             id="standard-basic"
             label="Username"
+            name="username"
             InputLabelProps={{
               shrink: true,
             }}
+            value={userForm.username}
+            onChange={updateState}
           />
           <TextField
             required
@@ -94,6 +130,8 @@ const UsersDashboard = (userData) => {
             InputLabelProps={{
               shrink: true,
             }}
+            value={userForm.password}
+            onChange={updateState}
           />
 
           <Button type="submit" variant="contained">

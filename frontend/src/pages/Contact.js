@@ -40,6 +40,8 @@ const Contact = () => {
     let result = await axios.post(process.env.REACT_APP_API_URL + "contact", {
       contactInfo,
     });
+    alert(result.data.message);
+    setContactInfo(initialState);
   };
 
   const handleInputChange = (e) => {
@@ -56,12 +58,13 @@ const Contact = () => {
           Send me a message
         </Typography>
       </div>
-      <form onSubmit={submitContact} noValidate autoComplete="off">
+      <form onSubmit={submitContact} autoComplete="off">
         <div>
           <TextField
             required
             id="standard-required"
             name="name"
+            value={contactInfo.name}
             onChange={handleInputChange}
             label="Name"
           />
@@ -69,6 +72,7 @@ const Contact = () => {
             required
             id="standard-required"
             name="email"
+            value={contactInfo.email}
             onChange={handleInputChange}
             label="Email"
           />
@@ -79,7 +83,9 @@ const Contact = () => {
             rows={4}
             variant="outlined"
             name="message"
+            value={contactInfo.message}
             onChange={handleInputChange}
+            required
           />
         </div>
         <Button type="submit" variant="contained">

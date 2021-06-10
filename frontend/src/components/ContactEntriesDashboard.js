@@ -6,7 +6,7 @@ import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
 import Paper from "@material-ui/core/Paper";
 
-const ContactEntriesDashboard = (contactEntries) => {
+const ContactEntriesDashboard = ({ contactEntries }) => {
   return (
     <TableContainer component={Paper}>
       <Table aria-label="simple table">
@@ -19,7 +19,7 @@ const ContactEntriesDashboard = (contactEntries) => {
           </TableRow>
         </TableHead>
         <TableBody>
-          {/*  {contactEntries &&
+          {contactEntries &&
             contactEntries.map((item) => (
               <TableRow key={item._id}>
                 <TableCell component="th" scope="row">
@@ -29,7 +29,7 @@ const ContactEntriesDashboard = (contactEntries) => {
                 <TableCell>{item.email}</TableCell>
                 <TableCell>{item.message}</TableCell>
               </TableRow>
-            ))} */}
+            ))}
         </TableBody>
       </Table>
     </TableContainer>
