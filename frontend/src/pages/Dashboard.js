@@ -76,16 +76,11 @@ const Dashboard = () => {
     description: "",
   });
   const [projectData, setProjectData] = useState([]);
-
   const [contactEntries, setContactEntries] = useState([]);
   const [userData, setUserData] = useState([]);
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
-  };
-
-  const handleChangeIndex = (index) => {
-    setValue(index);
   };
 
   const getDashboard = async () => {
@@ -119,16 +114,24 @@ const Dashboard = () => {
         </Tabs>
       </AppBar>
       <TabPanel value={value} index={0} dir={theme.direction}>
-        <HomeDashboard homePageData={homePageData} />
+        <HomeDashboard
+          homePageData={homePageData}
+          setHomePageData={setHomePageData}
+          getDashboard={getDashboard}
+        />
       </TabPanel>
       <TabPanel value={value} index={1} dir={theme.direction}>
-        <ProjectsDashboard projectData={projectData} />
+        <ProjectsDashboard
+          projectData={projectData}
+          setProjectData={setProjectData}
+          getDashboard={getDashboard}
+        />
       </TabPanel>
       <TabPanel value={value} index={2} dir={theme.direction}>
         <ContactEntriesDashboard contactEntries={contactEntries} />
       </TabPanel>
       <TabPanel value={value} index={3} dir={theme.direction}>
-        <UsersDashboard userData={userData} />
+        <UsersDashboard userData={userData} setUserData={setUserData} />
       </TabPanel>
     </div>
   );

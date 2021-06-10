@@ -11,7 +11,6 @@ const Home = () => {
   const getData = async () => {
     try {
       const response = await axios.get(process.env.REACT_APP_API_URL);
-      console.log(response.data);
       setTitle(response.data.title);
       setDesription(response.data.description);
     } catch (err) {
