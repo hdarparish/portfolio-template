@@ -1,5 +1,7 @@
+import React, { useState } from "react";
+import { Link, useLocation, useHistory } from "react-router-dom";
+//styles
 import { AppBar } from "@material-ui/core";
-import { Link } from "react-router-dom";
 import { makeStyles } from "@material-ui/core/styles";
 import List from "@material-ui/core/List";
 import ListItem from "@material-ui/core/ListItem";
@@ -40,6 +42,13 @@ const useStyles = makeStyles({
 
 const Nav = () => {
   const classes = useStyles();
+  const { pathname } = useLocation();
+  let history = useHistory();
+  const logout = () => {
+    localStorage.removeItem("token");
+    history.replace("/");
+  };
+
   return (
     <div>
       <AppBar position="static" className={classes.root}>
@@ -56,9 +65,16 @@ const Nav = () => {
           <ListItem button component={Link} to="/contact">
             <ListItemText primary="Contact" />
           </ListItem>
-          <ListItem button component={Link} to="/dashboard">
-            <ListItemText primary="Login" />
-          </ListItem>
+          {pathname !== "/dashboard" && (
+            <ListItem button component={Link} to="/dashboard">
+              <ListItemText primary="Login" />
+            </ListItem>
+          )}
+          {pathname === "/dashboard" && (
+            <ListItem button onClick={logout}>
+              <ListItemText primary="Logout" />
+            </ListItem>
+          )}
         </List>
       </AppBar>
     </div>

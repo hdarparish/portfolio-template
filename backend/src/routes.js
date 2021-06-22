@@ -3,6 +3,7 @@ import dotenv from "dotenv";
 import db from "./db";
 import bcrypt from "bcrypt";
 import * as jwtoken from "jsonwebtoken";
+import {verifyToken} from "./verifyJWT"
 
 dotenv.config();
 const router = express.Router();
@@ -86,7 +87,7 @@ router.post("/login", async (request, response) => {
       let hashResult = await bcrypt.compare(password, result.password);
       if (hashResult) {
         const token = jwtoken.sign({ username }, process.env.JWT_SECRET, {
-          expiresIn: "10m",
+          expiresIn: "3m",
         });
         return response.status(200).send({ token });
       }
@@ -123,7 +124,7 @@ router.post("/user", async (request, response) => {
   }
 });
 
-router.get("/dashboard", async (request, response) => {
+router.get("/dashboard",  async (request, response) => {
   try {
     let data = await db.getAll();
     return response.status(200).send(data);

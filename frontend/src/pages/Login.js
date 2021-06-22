@@ -41,7 +41,7 @@ const Login = () => {
       password,
     });
     if (result.data.token) {
-      sessionStorage.setItem("token", result.data.token);
+      localStorage.setItem("token", result.data.token);
       let { from } = location.state || { from: { pathname: "/" } };
       history.replace(from);
     }
